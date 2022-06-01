@@ -11,22 +11,61 @@ const Controller = require("egg").Controller;
  * }
  */
 
-class UserController extends Controller {
-	async index() {
-		// get
-		const { ctx } = this;
-		const query = {
-			where: {
-				name: ctx.query.name,
-			},
-		};
+// md5
 
-		const users = await ctx.model.User.findAll(query);
+class UserController extends Controller {
+	async login() {
+		// post
+		const { ctx, app } = this;
+		// console.log(ctx.request)
+		const userName = ctx.request.body.name;
+		const passWord = ctx.request.body.password;
+
+		// check if username, password match
+		const user = await ctx.service.user.getUserByName(userName, passWord);
+
+		if (user) {
+			// generate token
+			const token = app.jwt.sign(
+				{
+					name: user["name"],
+					age: user["age"],
+					job: user["job"],
+				},
+				app.config.jwt.secret
+			);
+			ctx.body = {
+				code: 200,
+				data: token,
+				msg: "login succeed",
+			};
+		} else {
+			ctx.body = {
+				code: 400,
+				msg: "login failed",
+			};
+		}
+	}
+
+	async index() {
+		const { ctx, app } = this;
+
+		const result = app.jwt.decode(ctx.header.authorization.substring(7));
 
 		ctx.body = {
-			code: 200,
-			data: users,
-			msg: "query success",
+			code: 201,
+			data: result,
+			msg: "Verified!",
+		};
+	}
+
+	async getJobByToken() {
+		const { ctx, app } = this;
+		const result = app.jwt.decode(ctx.header.authorization.substring(7));
+		ctx.body = {
+			code: 201,
+			data: result["job"],
+			msg: "query successfully",
 		};
 	}
 
@@ -34,8 +73,16 @@ class UserController extends Controller {
 		// post
 		const { ctx } = this;
 		const { name, password, age, job } = ctx.request.body;
-		const res = await ctx.model.User.create({ name, password, age, job });
+		const passwordEncrypted = ctx.helper.getMd5Data(password);
+		console.log(passwordEncrypted);
+		const res = await ctx.model.User.create({
+			name,
+			password: passwordEncrypted,
+			age,
+			job,
+		});
 
+		ctx.status = 200;
 		ctx.body = {
 			code: ctx.status,
 			data: res,
@@ -45,6 +92,8 @@ class UserController extends Controller {
 
 	async delete() {
 		// delete
+		const { ctx } = this;
+		ctx.to;
 	}
 }
 
