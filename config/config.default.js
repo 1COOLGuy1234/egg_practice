@@ -49,6 +49,10 @@ module.exports = (appInfo) => {
 		ignore: ["/login"], // TODO: change the ingore here
 	};
 
+	config.cookies = {
+		httpOnly: true,
+	};
+
 	return {
 		...config,
 		...userConfig,

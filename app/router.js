@@ -20,9 +20,9 @@ module.exports = (app) => {
 	router.post("/user", controller.user.index);
 	router.post("/user/create", controller.user.create);
 	router.get(
-		"/user/getJobByToken",
+		"/user/getInfoByToken",
 		error_handler,
 		check_token,
-		controller.user.getJobByToken
+		controller.user.getInfoByToken
 	);
 };
