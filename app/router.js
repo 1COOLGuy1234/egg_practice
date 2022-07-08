@@ -13,8 +13,8 @@ module.exports = (app) => {
 
 	const { router, controller } = app;
 	// router.resources("login", "/login", controller.user);
-	router.get("/readUser", controller.test.readUser);
-	router.post("/createUser", controller.test.createUser);
+	// router.get("/readUser", controller.test.readUser);
+	// router.post("/createUser", controller.test.createUser);
 
 	router.post("/user/login", controller.user.login);
 	router.post("/user", controller.user.index);
@@ -25,4 +25,11 @@ module.exports = (app) => {
 		check_token,
 		controller.user.getInfoByToken
 	);
+	router.get("/contacts/getPageNumber", controller.contacts.getPageNumber);
+	router.get(
+		"/contacts/getPagingContacts",
+		controller.contacts.getPagingContacts
+	);
+	router.resources("contacts", "/contacts", controller.contacts);
+	// router.post("/contacts/create", controller.contacts.create);
 };

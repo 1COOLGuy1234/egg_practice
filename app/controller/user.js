@@ -31,7 +31,7 @@ class UserController extends Controller {
 					name: user["name"],
 					age: user["age"],
 					job: user["job"],
-					expireTime: Date.now() + 5 * 1000,
+					expireTime: Date.now() + 24 * 60 * 60 * 1000,
 				},
 				app.config.jwt.secret
 			);
@@ -98,8 +98,6 @@ class UserController extends Controller {
 
 	async delete() {
 		// delete
-		const { ctx } = this;
-		ctx.to;
 	}
 }
 
